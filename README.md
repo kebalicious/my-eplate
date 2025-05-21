@@ -1,75 +1,48 @@
-# Nuxt Minimal Starter
+# Malaysian License Plate Generator
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A web application for generating various types of Malaysian license plates including normal vehicles, EV, commercial, military, and public transport plates.
 
-## Setup
+## Features
 
-Make sure to install dependencies:
+- Multiple plate types (Normal, EV, Commercial, Military, Public Transport)
+- Customizable plate numbers
+- Different font styles (European, UK/Singapore, Old Malaysian, Japanese)
+- Dark mode support
+- Responsive design
 
+## Technologies Used
+
+- Vue 3 / Nuxt 3
+- Tailwind CSS
+- JavaScript
+
+## Getting Started
+
+1. Clone the repository
 ```bash
-# npm
+git clone https://github.com/yourusername/malaysian-license-plate-generator.git
+cd malaysian-license-plate-generator
+```
+
+2. Install dependencies
+```bash
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
+3. Run development server
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
-
+4. Build for production
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+## License
 
-```bash
-# npm
-npm run preview
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# pnpm
-pnpm preview
+## Disclaimer
 
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+This application is for demonstration purposes only and does not represent actual JPJ ePlates. It is not affiliated with or endorsed by JPJ Malaysia and should not be used for any official purposes.
