@@ -80,11 +80,11 @@
                 <div>
                     <label class="block mb-2 text-lg">Plate Type</label>
                     <div class="flex flex-wrap gap-2">
-                        <button @click="plateType = 'normal'" :class="[
+                        <button @click="plateType = 'ice'" :class="[
                             'px-4 py-2 rounded-lg text-sm transition-colors',
-                            plateType === 'normal' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                            plateType === 'ice' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                         ]">
-                            Normal
+                            ICE Car
                         </button>
                         <button @click="plateType = 'ev'" :class="[
                             'px-4 py-2 rounded-lg text-sm transition-colors',
@@ -110,6 +110,18 @@
                         ]">
                             Public Transport
                         </button>
+                        <button @click="plateType = 'mafia'" :class="[
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            plateType === 'mafia' ? 'bg-black text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        ]">
+                            Mafia
+                        </button>
+                        <button @click="plateType = 'royal'" :class="[
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            plateType === 'royal' ? 'bg-yellow-500 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        ]">
+                            Royal
+                        </button>
                     </div>
                 </div>
 
@@ -121,21 +133,65 @@
 
                 <div>
                     <label class="block mb-2 text-lg">Font Style</label>
-                    <select v-model="fontStyle" class="bg-white dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded-xl w-full">
-                        <option value="eu">European Font</option>
-                        <option value="uk">UK/Singapore Font</option>
-                        <option value="old">Old Malaysian Font</option>
-                        <option value="japan">Japanese Font</option>
-                    </select>
+                    <div class="flex flex-wrap gap-2">
+                        <button @click="fontStyle = 'eu'" :class="[
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            fontStyle === 'eu' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        ]">
+                            European
+                        </button>
+                        <button @click="fontStyle = 'uk'" :class="[
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            fontStyle === 'uk' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        ]">
+                            UK/Singapore
+                        </button>
+                        <button @click="fontStyle = 'old'" :class="[
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            fontStyle === 'old' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        ]">
+                            Old Malaysian
+                        </button>
+                        <button @click="fontStyle = 'japan'" :class="[
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            fontStyle === 'japan' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        ]">
+                            Japanese
+                        </button>
+                    </div>
                 </div>
 
                 <div>
                     <label class="block mb-2 text-lg">Text Color</label>
-                    <select v-model="textColor" class="bg-white dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded-xl w-full">
-                        <option v-for="(_, color) in textColors" :key="color" :value="color">
-                            {{ color.charAt(0).toUpperCase() + color.slice(1) }}
-                        </option>
-                    </select>
+                    <div class="flex flex-wrap gap-2">
+                        <button 
+                            @click="textColor = 'black'" 
+                            class="rounded-lg ring-2 ring-offset-2 w-10 h-10 hover:scale-110 transition-transform"
+                            :class="[
+                                'bg-black',
+                                textColor === 'black' ? 'ring-blue-500' : 'ring-transparent'
+                            ]"
+                        >
+                        </button>
+                        <button 
+                            @click="textColor = 'white'" 
+                            class="rounded-lg ring-2 ring-offset-2 w-10 h-10 hover:scale-110 transition-transform"
+                            :class="[
+                                'bg-white',
+                                textColor === 'white' ? 'ring-blue-500' : 'ring-transparent'
+                            ]"
+                        >
+                        </button>
+                        <button 
+                            @click="textColor = 'red'" 
+                            class="rounded-lg ring-2 ring-offset-2 w-10 h-10 hover:scale-110 transition-transform"
+                            :class="[
+                                'bg-red-600',
+                                textColor === 'red' ? 'ring-blue-500' : 'ring-transparent'
+                            ]"
+                        >
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -157,7 +213,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-const plateType = ref('normal')
+const plateType = ref('ice')
 const plateText = ref('MALAYSIA')
 const fontStyle = ref('eu')
 const textColor = ref('black')
@@ -185,11 +241,13 @@ onMounted(() => {
 })
 
 const plateColors = {
-    normal: '#0000B8',
+    ice: '#0000B8',
     ev: '#8dbf22',
     commercial: '#CC0000',
     military: '#5D6532',
-    public: '#FF0000'
+    public: '#FF0000',
+    mafia: '#000000',
+    royal: '#FADA5E'
 }
 
 const textColors = {
