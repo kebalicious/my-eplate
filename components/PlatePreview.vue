@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto px-16 py-4 w-full max-w-7xl">
+    <div class="mx-auto px-16 py-4 w-full max-w-7xl text-gray-900 dark:text-white">
         <div class="flex justify-between items-center mb-8">
             <h1 class="font-bold text-3xl">
                 Malaysia License Plate Generator
@@ -14,13 +14,11 @@
         </div>
 
         <!-- Plate Preview -->
-        <div class="bg-white dark:bg-gray-800 shadow-sm mb-12 border-4 border-gray-100 dark:border-gray-700 rounded-xl rounded-t-lg">
-            <h2 class="bg-gray-100 dark:bg-gray-700 mb-4 p-2 overflow-hidden font-semibold dark:text-white text-xl">Preview</h2>
-            <div class="relative mx-auto w-full max-w-[800px] h-[176px]">
+        <div class="bg-white dark:bg-gray-900 shadow-sm mb-12 border-4 border-gray-100 dark:border-gray-800 rounded-xl rounded-t-lg">
+            <h2 class="bg-gray-100 dark:bg-gray-800 mb-4 p-2 overflow-hidden font-semibold text-xl">Preview</h2>
+            <div class="relative mx-auto p-4 w-full max-w-[800px] h-[176px]">
                 <!-- Main plate content -->
-                <div class="absolute inset-0 rounded-lg" :style="{
-                    backgroundColor: backgroundColors[backgroundColor]
-                }">
+                <div class="absolute inset-0 bg-[#F4F4F4] rounded-lg">
                     <!-- QR Code (top right) -->
                     <div class="top-2 right-2 absolute bg-black rounded-sm w-4 h-4"></div>
 
@@ -33,7 +31,7 @@
                     <div class="flex flex-row h-full">
                         <!-- Decal Area with Malaysian Flag -->
                         <div class="relative pl-2.5 rounded-s-xl overflow-hidden" :style="{
-                            backgroundColor: plateType === 'ev' ? '#8dbf22' : '#0000B8'
+                            backgroundColor: plateColors[plateType]
                         }">
                             <div class="flex justify-center items-center mx-auto p-3 w-full h-[80px]">
                                 <img src="https://i.imgur.com/MPgmBgw.png" alt="flag"
@@ -76,39 +74,39 @@
         </div>
 
         <!-- Controls -->
-        <div class="bg-white dark:bg-gray-800 shadow-sm mb-12 border-4 border-gray-100 dark:border-gray-700 rounded-xl rounded-t-lg">
-            <h2 class="bg-gray-100 dark:bg-gray-700 mb-4 p-2 overflow-hidden font-semibold dark:text-white text-xl">Controls</h2>
+        <div class="bg-white dark:bg-gray-900 shadow-sm mb-12 border-4 border-gray-100 dark:border-gray-800 rounded-xl rounded-t-lg">
+            <h2 class="bg-gray-100 dark:bg-gray-800 mb-4 p-2 overflow-hidden font-semibold text-xl">Controls</h2>
             <div class="gap-6 grid grid-cols-1 md:grid-cols-2 p-4">
                 <div>
                     <label class="block mb-2 text-lg">Plate Type</label>
                     <div class="flex flex-wrap gap-2">
                         <button @click="plateType = 'normal'" :class="[
-                            'px-4 py-2 rounded-lg text-sm',
-                            plateType === 'normal' ? 'bg-blue-600 text-white' : 'bg-gray-100'
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            plateType === 'normal' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                         ]">
                             Normal
                         </button>
                         <button @click="plateType = 'ev'" :class="[
-                            'px-4 py-2 rounded-lg text-sm',
-                            plateType === 'ev' ? 'bg-green-600 text-white' : 'bg-gray-100'
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            plateType === 'ev' ? 'bg-green-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                         ]">
                             EV
                         </button>
                         <button @click="plateType = 'commercial'" :class="[
-                            'px-4 py-2 rounded-lg text-sm',
-                            plateType === 'commercial' ? 'bg-yellow-600 text-white' : 'bg-gray-100'
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            plateType === 'commercial' ? 'bg-yellow-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                         ]">
                             Commercial
                         </button>
                         <button @click="plateType = 'military'" :class="[
-                            'px-4 py-2 rounded-lg text-sm',
-                            plateType === 'military' ? 'bg-green-800 text-white' : 'bg-gray-100'
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            plateType === 'military' ? 'bg-green-800 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                         ]">
                             Military
                         </button>
                         <button @click="plateType = 'public'" :class="[
-                            'px-4 py-2 rounded-lg text-sm',
-                            plateType === 'public' ? 'bg-red-600 text-white' : 'bg-gray-100'
+                            'px-4 py-2 rounded-lg text-sm transition-colors',
+                            plateType === 'public' ? 'bg-red-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                         ]">
                             Public Transport
                         </button>
@@ -118,12 +116,12 @@
                 <div>
                     <label class="block mb-2 text-lg">Plate Number</label>
                     <input v-model="plateText" type="text" maxlength="10"
-                        class="p-4 border rounded-xl w-full text-xl uppercase" />
+                        class="bg-white dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded-xl w-full text-xl uppercase" />
                 </div>
 
                 <div>
                     <label class="block mb-2 text-lg">Font Style</label>
-                    <select v-model="fontStyle" class="p-4 border rounded-xl w-full">
+                    <select v-model="fontStyle" class="bg-white dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded-xl w-full">
                         <option value="eu">European Font</option>
                         <option value="uk">UK/Singapore Font</option>
                         <option value="old">Old Malaysian Font</option>
@@ -133,7 +131,7 @@
 
                 <div>
                     <label class="block mb-2 text-lg">Text Color</label>
-                    <select v-model="textColor" class="p-4 border rounded-xl w-full">
+                    <select v-model="textColor" class="bg-white dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded-xl w-full">
                         <option v-for="(_, color) in textColors" :key="color" :value="color">
                             {{ color.charAt(0).toUpperCase() + color.slice(1) }}
                         </option>
@@ -143,7 +141,7 @@
         </div>
 
         <!-- Disclaimer -->
-        <div class="bg-[#fff2b2] dark:bg-[#3d3003] p-4 rounded-xl text-[#7c620c] dark:text-[#fff2b2]">
+        <div class="bg-amber-50 dark:bg-amber-950 p-4 rounded-xl text-amber-800 dark:text-amber-200">
             <div class="flex justify-between">
                 <p class="font-bold">Disclaimer</p>
             </div>
@@ -205,31 +203,6 @@ const fonts = {
     uk: "'UKNumberPlate', sans-serif",
     old: "'OldMalaysian', sans-serif",
     japan: "'JapanPlate', sans-serif"
-}
-
-const backgroundColors = {
-    white: "#F4F4F4",
-    black: "#000000",
-    yellow: "#FFB800"
-}
-
-const getDecalColor = (bgColor) => {
-    switch (bgColor) {
-        case "#0000B8":
-            return "Non-EV Cars"
-        case "#8dbf22":
-            return "EV Cars"
-        case "black":
-            return "Mafia"
-        case "#CC0000":
-            return "Commercial Vehicles"
-        case "#5D6532":
-            return "Army"
-        case "#FADA5E":
-            return "Royal"
-        default:
-            return "Unknown"
-    }
 }
 </script>
 
