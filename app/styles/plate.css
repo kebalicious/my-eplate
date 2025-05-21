@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "EURORegular";
+  src: url("//plates5.customeuropeanplates.com/app/resources/fonts/eurov5.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("//fonts.gstatic.com/s/montserrat/v26/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.euro-font {
+  font-family: "EURORegular", sans-serif;
+}
+
+.font-montserrat {
+  font-family: "Montserrat", sans-serif;
+} 
