@@ -1,6 +1,6 @@
 <template>
     <div
-        class="mx-auto py-4 border-x-2 dark:border-gray-700 border-black rounded-none w-full max-w-full text-gray-900 dark:text-gray-100">
+        class="mx-auto py-8 border-x-2 dark:border-gray-700 border-black rounded-none w-full max-w-full text-gray-900 dark:text-gray-100">
         <div class="flex sm:flex-row flex-col justify-between items-center gap-4 mb-8 rounded-none">
             <div class="bg-gray-50/30 dark:bg-gray-800/30 p-4 border-2 dark:border-gray-700 border-black border-l-0 rounded-none">
                 <h1 class="font-bold text-2xl sm:text-3xl sm:text-left text-center">

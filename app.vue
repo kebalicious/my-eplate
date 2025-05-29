@@ -1,14 +1,10 @@
 <template>
   <div class="bg-grid bg-white dark:bg-gray-900 min-h-screen text-gray-800 dark:text-gray-200">
-    <div class="flex gap-8 bg-grid mx-auto max-w-[96rem]">
+    <div class="flex gap-8 mx-auto max-w-[96rem]">
       <!-- Main Content -->
       <main class="flex flex-col flex-1 gap-8">
-        <PlatePreview 
-          :plate-type="plateType"
-          :font-style="fontStyle"
-          :plate-number="plateNumber"
-          :text-color="textColor"
-        />
+        <PlatePreview :plate-type="plateType" :font-style="fontStyle" :plate-number="plateNumber"
+          :text-color="textColor" />
       </main>
     </div>
   </div>
