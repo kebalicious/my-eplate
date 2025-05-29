@@ -13,5 +13,8 @@
     "@nuxt/icon": "latest",
     "@nuxtjs/tailwindcss": "^6.11.4",
     "nuxt": "^3.10.1"
+  },
+  "dependencies": {
+    "html2canvas": "^1.4.1"
   }
 }

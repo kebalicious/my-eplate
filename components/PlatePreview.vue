@@ -7,25 +7,149 @@
                     Malaysian e-Plate Generator
                 </h1>
             </div>
-            <button @click="toggleTheme"
-                class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 transition-colors">
-                <Icon :name="isDark ? 'ph:moon-fill' : 'ph:sun-fill'" class="text-xl" />
-                {{ isDark ? 'Dark' : 'Light' }} Mode
-            </button>
         </div>
 
         <div
             class="flex items-center bg-white/80 dark:bg-gray-900/80 shadow-sm mb-2 p-0 border-2 border-x-0 border-black dark:border-black rounded-none">
-            <button
-                class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-none text-gray-700 dark:text-gray-300 transition-colors">
-                <Icon name="ph:file" class="text-lg" />
-                <span class="text-sm">File</span>
-            </button>
-            <button
-                class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-none text-gray-700 dark:text-gray-300 transition-colors">
-                <Icon name="ph:question" class="text-lg" />
-                <span class="text-sm">Help</span>
-            </button>
+            <!-- File Button with Dropdown -->
+            <div class="relative">
+                <button @click="showFileDropdown = !showFileDropdown"
+                    class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-none text-gray-700 dark:text-gray-300 transition-colors">
+                    <Icon name="ph:file" class="text-lg" />
+                    <span class="text-sm">File</span>
+                </button>
+                <div v-if="showFileDropdown"
+                    class="z-10 absolute bg-white dark:bg-gray-800 shadow-lg mt-1 border border-gray-200 dark:border-gray-700 rounded-none min-w-[200px]">
+                    <!-- Save As Submenu -->
+                    <button @click="newPlate"
+                        class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                        <Icon name="ph:plus" class="text-lg" />
+                        <span>New</span>
+                    </button>
+                    <div class="group relative">
+                        <button @click="showSaveAsDropdown = !showSaveAsDropdown"
+                            class="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                            <div class="flex items-center gap-2">
+                                <Icon name="ph:floppy-disk" class="text-lg" />
+                                <span>Save as</span>
+                            </div>
+                            <Icon name="ph:caret-right" class="text-lg" />
+                        </button>
+                        <div v-if="showSaveAsDropdown"
+                            class="top-0 left-full absolute bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-none min-w-[200px]">
+                            <button @click="saveAs('png')"
+                                class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                                <Icon name="ph:image" class="text-lg" />
+                                <span>PNG</span>
+                            </button>
+                            <button @click="saveAs('jpg')"
+                                class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                                <Icon name="ph:image" class="text-lg" />
+                                <span>JPG</span>
+                            </button>
+                            <button @click="saveAs('svg')"
+                                class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                                <Icon name="ph:image" class="text-lg" />
+                                <span>SVG</span>
+                            </button>
+                            <button @click="saveAs('webp')"
+                                class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                                <Icon name="ph:image" class="text-lg" />
+                                <span>WebP</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button @click="printPlate"
+                        class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                        <Icon name="ph:printer" class="text-lg" />
+                        <span>Print</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- View Button with Dropdown -->
+            <div class="relative">
+                <button @click="showViewDropdown = !showViewDropdown"
+                    class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-none text-gray-700 dark:text-gray-300 transition-colors">
+                    <Icon name="ph:eye" class="text-lg" />
+                    <span class="text-sm">View</span>
+                </button>
+                <div v-if="showViewDropdown"
+                    class="z-10 absolute bg-white dark:bg-gray-800 shadow-lg mt-1 border border-gray-200 dark:border-gray-700 rounded-none min-w-[200px]">
+                    <button @click="toggleTheme"
+                        class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                        <Icon :name="isDark ? 'ph:moon-fill' : 'ph:sun-fill'" class="text-lg" />
+                        <span>{{ isDark ? 'Dark' : 'Light' }} Mode</span>
+                    </button>
+                    <div class="group relative">
+                        <button @click="showLanguageDropdown = !showLanguageDropdown"
+                            class="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                            <div class="flex items-center gap-2">
+                                <Icon name="ph:translate" class="text-lg" />
+                                <span>Language</span>
+                            </div>
+                            <Icon name="ph:caret-right" class="text-lg" />
+                        </button>
+                        <div v-if="showLanguageDropdown"
+                            class="top-0 left-full absolute bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-none min-w-[200px]">
+                            <button @click="setLanguage('en')" 
+                                class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                                <span>English</span>
+                            </button>
+                            <button @click="setLanguage('ms')"
+                                class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                                <span>Bahasa Melayu</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Button with Dropdown -->
+            <div class="relative">
+                <button @click="showHelpDropdown = !showHelpDropdown"
+                    class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-none text-gray-700 dark:text-gray-300 transition-colors">
+                    <Icon name="ph:question" class="text-lg" />
+                    <span class="text-sm">Help</span>
+                </button>
+                <div v-if="showHelpDropdown"
+                    class="z-10 absolute bg-white dark:bg-gray-800 shadow-lg mt-1 border border-gray-200 dark:border-gray-700 rounded-none min-w-[200px]">
+                    <!-- Go To Submenu -->
+                    <div class="group relative">
+                        <button @click="showGoToDropdown = !showGoToDropdown"
+                            class="flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                            <div class="flex items-center gap-2">
+                                <Icon name="ph:link" class="text-lg" />
+                                <span>Go To</span>
+                            </div>
+                            <Icon name="ph:caret-right" class="text-lg" />
+                        </button>
+                        <div v-if="showGoToDropdown"
+                            class="top-0 left-full absolute bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-none min-w-[200px]">
+                            <a href="https://kebalicious.link" target="_blank"
+                                class="block flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 text-sm">
+                                <Icon name="ph:globe" class="text-lg" />
+                                <span>Kebal</span>
+                            </a>
+                            <a href="https://kebal.my" target="_blank"
+                                class="block flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 text-sm">
+                                <Icon name="ph:globe" class="text-lg" />
+                                <span>Kebal</span>
+                            </a>
+                            <a href="https://split-bill.kebal.my" target="_blank"
+                                class="block flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 text-sm">
+                                <Icon name="ph:globe" class="text-lg" />
+                                <span>Split Bill</span>
+                            </a>
+                        </div>
+                    </div>
+                    <button @click="showAboutModal = true"
+                        class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                        <Icon name="ph:info" class="text-lg" />
+                        <span>About</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Toolbar ala Microsoft Office -->
@@ -137,7 +261,7 @@
 
         <!-- Plate Preview -->
         <div
-            class="bg-gray-50/30 shadow-sm mb-8 sm:mb-12 border-x-0 border-y-2 border-black dark:border-black rounded-none">
+            class="bg-gray-50/30 shadow-sm mb-8 sm:mb-12 border-x-0 border-y-2 border-black dark:border-black rounded-none plate-preview">
             <div class="relative m-12 mx-auto p-2 sm:p-8 rounded-none w-full max-w-[800px] h-[120px] sm:h-[176px]">
                 <!-- Main plate content -->
                 <div class="absolute inset-0 rounded-lg" :style="{ backgroundColor: plateColors[bgColor] }">
@@ -213,11 +337,34 @@
                 official purposes.
             </p>
         </div>
+
+        <!-- About Modal -->
+        <div v-if="showAboutModal" class="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+            <div class="bg-white dark:bg-gray-800 mx-4 p-6 rounded-none w-full max-w-md">
+                <div class="flex justify-between items-center mb-4 pb-4 border-gray-200 dark:border-gray-700 border-b">
+                    <h2 class="font-bold text-xl">About</h2>
+                    <button @click="showAboutModal = false"
+                        class="text-gray-500 hover:text-red-700 dark:hover:text-gray-300 dark:text-gray-400 transition-colors">
+                        <Icon name="ph:x" class="text-lg" />
+                    </button>
+                </div>
+                <p class="mb-4 text-justify">
+                    This is an app to generate Malaysian license plate.
+                    This tool is for demonstration purposes only and is not affiliated with Road Transport Department
+                    Malaysia (JPJ).
+                </p>
+                <p class="mb-4">
+                    This app is created by <a href="https://kebal.my" target="_blank"
+                        class="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Kebal</a>.
+                </p>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import html2canvas from 'html2canvas'
 
 const plateType = ref('ice')
 const plateText = ref('MALAYSIA')
@@ -229,6 +376,14 @@ const showTextColorDropdown = ref(false)
 const showBgColorDropdown = ref(false)
 const bgColor = ref('white')
 const showFlagLine = ref(true)
+const showFileDropdown = ref(false)
+const showHelpDropdown = ref(false)
+const showGoToDropdown = ref(false)
+const showSaveAsDropdown = ref(false)
+const showAboutModal = ref(false)
+const showViewDropdown = ref(false)
+const showLanguageDropdown = ref(false)
+const currentLanguage = ref('en')
 
 const malText = ref('MAL')
 const malTextOptions = [
@@ -238,8 +393,8 @@ const malTextOptions = [
 
 const flagType = ref('origin')
 const flagTypeOptions = [
-    { key: 'origin', label: 'Origin Color' },
-    { key: 'bw', label: 'Black & White' }
+    { key: 'origin', label: 'Color' },
+    { key: 'bw', label: 'B&W' }
 ]
 
 const flagUrl = computed(() =>
@@ -261,8 +416,7 @@ const fontStyleOptions = [
     { value: 'jpj1', label: 'JPJ 1' },
     { value: 'noplato', label: 'No Plato' },
     { value: 'usa', label: 'USA' },
-    { value: 'korea1', label: 'Korea 1' },
-    { value: 'korea2', label: 'Korea 2' },
+    { value: 'korea', label: 'Korea' },
     { value: 'arial', label: 'Arial' },
     { value: 'uk', label: 'UK' },
     { value: 'euro', label: 'European' }
@@ -282,6 +436,18 @@ onMounted(() => {
             document.documentElement.classList.toggle('dark', event.matches)
         })
     }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.relative')) {
+            showFileDropdown.value = false
+            showHelpDropdown.value = false
+            showGoToDropdown.value = false
+            showSaveAsDropdown.value = false
+            showViewDropdown.value = false
+            showLanguageDropdown.value = false
+        }
+    })
 })
 
 const plateColors = {
@@ -327,8 +493,7 @@ const fonts = {
     jpj1: "'JPJ1', sans-serif",
     noplato: "'NoPlato', sans-serif",
     usa: "'USA', sans-serif",
-    korea1: "'Korea1', sans-serif",
-    korea2: "'Korea2', sans-serif",
+    korea: "'Korea', sans-serif",
     arial: "'Arial', sans-serif",
     uk: "'UK', sans-serif",
     euro: "'Euro', sans-serif"
@@ -387,6 +552,49 @@ const qrCodeUrl = computed(() => {
     const size = 100
     return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}`
 })
+
+// Save plate as image
+const saveAs = async (format) => {
+    showFileDropdown.value = false
+    const plateElement = document.querySelector('.plate-preview')
+    if (!plateElement) return
+
+    try {
+        const canvas = await html2canvas(plateElement)
+        const dataUrl = canvas.toDataURL(`image/${format}`)
+        const link = document.createElement('a')
+        link.download = `plate.${format}`
+        link.href = dataUrl
+        link.click()
+    } catch (error) {
+        console.error('Error saving image:', error)
+    }
+}
+
+// Print plate
+const printPlate = () => {
+    showFileDropdown.value = false
+    window.print()
+}
+
+// New plate
+const newPlate = () => {
+    showFileDropdown.value = false
+    plateText.value = ''
+    plateType.value = 'ice'
+    fontStyle.value = 'euro'
+    textColor.value = 'black'
+    bgColor.value = 'white'
+    malText.value = 'MAL'
+    flagType.value = 'origin'
+    showFlagLine.value = true
+}
+
+const setLanguage = (lang) => {
+    currentLanguage.value = lang
+    showLanguageDropdown.value = false
+    // Here you can add logic to change the language of the application
+}
 </script>
 
 <style>
@@ -433,8 +641,8 @@ const qrCodeUrl = computed(() => {
 }
 
 @font-face {
-    font-family: "Korea1";
-    src: url("/fonts/korea1.woff2") format("woff2");
+    font-family: "Korea";
+    src: url("/fonts/korea.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
 }
