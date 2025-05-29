@@ -14,6 +14,20 @@
             </button>
         </div>
 
+        <div
+            class="flex items-center bg-white/80 dark:bg-gray-900/80 shadow-sm mb-2 p-0 border-2 border-x-0 border-black dark:border-black rounded-none">
+            <button
+                class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-none text-gray-700 dark:text-gray-300 transition-colors">
+                <Icon name="ph:file" class="text-lg" />
+                <span class="text-sm">File</span>
+            </button>
+            <button
+                class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-none text-gray-700 dark:text-gray-300 transition-colors">
+                <Icon name="ph:question" class="text-lg" />
+                <span class="text-sm">Help</span>
+            </button>
+        </div>
+
         <!-- Toolbar ala Microsoft Office -->
         <div
             class="flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 shadow-sm mb-8 p-3 border-2 border-x-0 border-black dark:border-black rounded-none">
@@ -49,8 +63,8 @@
                 placeholder="Plate No." />
 
             <!-- Font Style -->
-            <select v-model="fontStyle" class="bg-white dark:bg-gray-800 ml-2 px-2 py-1 border rounded-none w-48 text-base"
-                title="Font Style">
+            <select v-model="fontStyle"
+                class="bg-white dark:bg-gray-800 ml-2 px-2 py-1 border rounded-none w-48 text-base" title="Font Style">
                 <option v-for="option in fontStyleOptions" :key="option.value" :value="option.value">
                     {{ option.label }}
                 </option>
@@ -70,13 +84,10 @@
                 <div v-if="showTextColorDropdown"
                     class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-900 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-40">
                     <button v-for="color in textColorOptions" :key="color.key"
-                        @click="textColor = color.key; showTextColorDropdown = false"
-                        :title="color.label"
-                        :class="[
+                        @click="textColor = color.key; showTextColorDropdown = false" :title="color.label" :class="[
                             'w-8 h-8 rounded-none border-2 flex items-center justify-center transition-all',
                             textColor === color.key ? 'ring-2 ring-blue-500' : ''
-                        ]"
-                        :style="{ backgroundColor: textColors[color.key] }">
+                        ]" :style="{ backgroundColor: textColors[color.key] }">
                     </button>
                 </div>
             </div>
@@ -95,15 +106,32 @@
                 <div v-if="showBgColorDropdown"
                     class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-900 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-40">
                     <button v-for="color in bgColorOptions" :key="color.key"
-                        @click="bgColor = color.key; showBgColorDropdown = false"
-                        :title="color.label"
-                        :class="[
+                        @click="bgColor = color.key; showBgColorDropdown = false" :title="color.label" :class="[
                             'w-8 h-8 rounded-none border-2 flex items-center justify-center transition-all',
                             bgColor === color.key ? 'ring-2 ring-blue-500' : ''
-                        ]"
-                        :style="{ backgroundColor: plateColors[color.key] }">
+                        ]" :style="{ backgroundColor: plateColors[color.key] }">
                     </button>
                 </div>
+            </div>
+
+            <!-- MAL/MY Dropdown -->
+            <div class="relative ml-2">
+                <select v-model="malText" class="bg-white dark:bg-gray-800 px-2 py-1 border rounded" title="MAL/MY">
+                    <option v-for="opt in malTextOptions" :key="opt.key" :value="opt.key">{{ opt.label }}</option>
+                </select>
+            </div>
+
+            <!-- Flag Type Dropdown -->
+            <div class="relative ml-2">
+                <select v-model="flagType" class="bg-white dark:bg-gray-800 px-2 py-1 border rounded" title="Flag Type">
+                    <option v-for="opt in flagTypeOptions" :key="opt.key" :value="opt.key">{{ opt.label }}</option>
+                </select>
+            </div>
+
+            <!-- Show Flag Line -->
+            <div class="flex items-center ml-2">
+                <input type="checkbox" id="showFlagLine" v-model="showFlagLine" class="mr-1" />
+                <label for="showFlagLine" class="text-xs">Show Line</label>
             </div>
         </div>
 
@@ -132,12 +160,12 @@
                         }">
                             <div
                                 class="flex justify-center items-center mx-auto p-2 sm:p-3 w-full h-[55px] sm:h-[80px]">
-                                <img src="https://i.imgur.com/MPgmBgw.png" alt="flag"
-                                    class="w-full h-full object-contain" />
+                                <img :src="flagUrl" alt="flag" class="mx-auto w-16 h-full object-contain" />
                             </div>
+                            <hr v-if="showFlagLine" class="mx-auto mt-2 mb-0 pb-0 border-4 border-white w-8">
                             <div
                                 class="flex justify-center items-center h-[55px] sm:h-[81px] font-montserrat font-bold text-white text-sm sm:text-xl tracking-wider">
-                                MAL
+                                {{ malText }}
                             </div>
                         </div>
 
@@ -200,6 +228,25 @@ const showTypeDropdown = ref(false)
 const showTextColorDropdown = ref(false)
 const showBgColorDropdown = ref(false)
 const bgColor = ref('white')
+const showFlagLine = ref(true)
+
+const malText = ref('MAL')
+const malTextOptions = [
+    { key: 'MAL', label: 'MAL' },
+    { key: 'MY', label: 'MY' }
+]
+
+const flagType = ref('origin')
+const flagTypeOptions = [
+    { key: 'origin', label: 'Origin Color' },
+    { key: 'bw', label: 'Black & White' }
+]
+
+const flagUrl = computed(() =>
+    flagType.value === 'origin'
+        ? '/images/flag_ms.webp'
+        : '/images/flag_bw_1.webp'
+)
 
 const toggleTheme = () => {
     isDark.value = !isDark.value
@@ -274,10 +321,17 @@ const textColors = {
 }
 
 const fonts = {
-    eu: "'EURORegular', sans-serif",
-    uk: "'UKNumberPlate', sans-serif",
-    old: "'OldMalaysian', sans-serif",
-    japan: "'JapanPlate', sans-serif"
+    japan1: "'Japan1', sans-serif",
+    japan2: "'Japan2', sans-serif",
+    japan3: "'Japan3', sans-serif",
+    jpj1: "'JPJ1', sans-serif",
+    noplato: "'NoPlato', sans-serif",
+    usa: "'USA', sans-serif",
+    korea1: "'Korea1', sans-serif",
+    korea2: "'Korea2', sans-serif",
+    arial: "'Arial', sans-serif",
+    uk: "'UK', sans-serif",
+    euro: "'Euro', sans-serif"
 }
 
 const plateTypes = [
@@ -337,29 +391,78 @@ const qrCodeUrl = computed(() => {
 
 <style>
 @font-face {
-    font-family: "EURORegular";
-    src: url("//plates5.customeuropeanplates.com/app/resources/fonts/eurov5.woff2") format("woff2");
+    font-family: "Japan1";
+    src: url("/fonts/japan1.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: "UKNumberPlate";
-    src: url("//fonts.cdnfonts.com/css/uk-number-plate") format("woff2");
+    font-family: "Japan2";
+    src: url("/fonts/japan2.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: "OldMalaysian";
-    src: url("//fonts.cdnfonts.com/css/din-1451-std") format("woff2");
+    font-family: "Japan3";
+    src: url("/fonts/japan3.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: "JapanPlate";
-    src: url("//fonts.cdnfonts.com/css/japanese-number-plate") format("woff2");
+    font-family: "JPJ1";
+    src: url("/fonts/jpj1.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "NoPlato";
+    src: url("/fonts/noplato.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "USA";
+    src: url("/fonts/usa.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Korea1";
+    src: url("/fonts/korea1.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Korea2";
+    src: url("/fonts/korea2.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Arial";
+    src: url("/fonts/arial.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "UK";
+    src: url("/fonts/uk.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Euro";
+    src: url("/fonts/euro.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
 }
