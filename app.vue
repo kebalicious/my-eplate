@@ -1,6 +1,6 @@
 <template>
   <div class="bg-grid min-h-screen text-gray-800">
-    <div class="flex gap-8 mx-auto max-w-7xl">
+    <div class="flex gap-8 mx-auto max-w-[96rem]">
       <!-- Main Content -->
       <main class="flex flex-col flex-1 gap-8">
         <PlatePreview 

@@ -1,6 +1,6 @@
 <template>
     <div
-        class="mx-auto py-4 border-x-2 dark:border-gray-800 border-black rounded-none w-full max-w-7xl text-gray-900 dark:text-white">
+        class="mx-auto py-4 border-x-2 dark:border-gray-800 border-black rounded-none w-full max-w-full text-gray-900 dark:text-white">
         <div class="flex sm:flex-row flex-col justify-between items-center gap-4 mb-8 rounded-none">
             <div class="bg-gray-50/30 p-4 border-2 border-black dark:border-black border-l-0 rounded-none">
                 <h1 class="font-bold text-2xl sm:text-3xl sm:text-left text-center">
@@ -92,7 +92,7 @@
                         </button>
                         <div v-if="showLanguageDropdown"
                             class="top-0 left-full absolute bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-none min-w-[200px]">
-                            <button @click="setLanguage('en')" 
+                            <button @click="setLanguage('en')"
                                 class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
                                 <span>English</span>
                             </button>
@@ -157,6 +157,7 @@
             class="flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 shadow-sm mb-8 p-3 border-2 border-x-0 border-black dark:border-black rounded-none">
             <!-- Plate Type Dropdown -->
             <div class="relative">
+                <div class="mb-1 text-gray-500 dark:text-gray-400 text-xs">Plate Type</div>
                 <button @click="showTypeDropdown = !showTypeDropdown"
                     class="flex justify-between items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none w-64"
                     title="Plate Type">
@@ -182,20 +183,57 @@
             </div>
 
             <!-- Plate Number -->
-            <input v-model="plateText" type="text" maxlength="10"
-                class="bg-white dark:bg-gray-800 ml-2 px-2 py-1 border rounded-none w-96 text-base" title="Plate Number"
-                placeholder="Plate No." />
+            <div class="relative">
+                <div class="mb-1 text-gray-500 dark:text-gray-400 text-xs">Plate Number</div>
+                <div class="relative">
+                    <input v-model="plateText" type="text" maxlength="10"
+                        class="bg-white dark:bg-gray-800 px-2 py-1 pr-16 border rounded-none w-96 text-base"
+                        title="Plate Number" placeholder="Plate No." />
+                    <div class="top-1/2 right-2 absolute text-gray-500 dark:text-gray-400 text-xs -translate-y-1/2">
+                        {{ plateText.length }}/10
+                    </div>
+                </div>
+            </div>
 
             <!-- Font Style -->
-            <select v-model="fontStyle"
-                class="bg-white dark:bg-gray-800 ml-2 px-2 py-1 border rounded-none w-48 text-base" title="Font Style">
-                <option v-for="option in fontStyleOptions" :key="option.value" :value="option.value">
-                    {{ option.label }}
-                </option>
-            </select>
+            <div class="relative">
+                <div class="mb-1 text-gray-500 dark:text-gray-400 text-xs">Font Face</div>
+                <button @click="showFontDropdown = !showFontDropdown"
+                    class="flex justify-between items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none w-48"
+                    title="Font Style">
+                    <div class="flex items-center gap-2">
+                        <Icon name="ph:text-t" class="text-lg" />
+                        <span>{{fontStyleOptions.find(f => f.value === fontStyle)?.label}}</span>
+                    </div>
+                    <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div v-if="showFontDropdown"
+                    class="z-10 absolute bg-white dark:bg-gray-800 shadow-lg mt-1 border border-gray-200 dark:border-gray-700 rounded-none w-48 max-h-[300px] overflow-y-auto">
+                    <button v-for="option in fontStyleOptions" :key="option.value"
+                        @click="fontStyle = option.value; showFontDropdown = false"
+                        class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                        <span>{{ option.label }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Font Size -->
+            <div class="relative">
+                <div class="mb-1 text-gray-500 dark:text-gray-400 text-xs">Font Size</div>
+                <div
+                    class="flex items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none w-48 h-[34px]">
+                    <input type="range" v-model="fontSize" min="64" max="120" step="1"
+                        class="bg-gray-200 dark:bg-gray-700 rounded-lg w-full h-2 appearance-none cursor-pointer"
+                        @input="updateFontSize" />
+                    <span class="w-12 text-sm text-center">{{ fontSize }}px</span>
+                </div>
+            </div>
 
             <!-- Text Color Dropdown -->
-            <div class="relative ml-2">
+            <div class="relative">
+                <div class="mb-1 text-gray-500 dark:text-gray-400 text-xs">Text Color</div>
                 <button @click="showTextColorDropdown = !showTextColorDropdown"
                     class="flex items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none"
                     title="Text Color">
@@ -217,7 +255,8 @@
             </div>
 
             <!-- Plate Background Color Dropdown -->
-            <div class="relative ml-2">
+            <div class="relative">
+                <div class="mb-1 text-gray-500 dark:text-gray-400 text-xs">Background</div>
                 <button @click="showBgColorDropdown = !showBgColorDropdown"
                     class="flex items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none"
                     title="Plate Background Color">
@@ -239,30 +278,69 @@
             </div>
 
             <!-- MAL/MY Dropdown -->
-            <div class="relative ml-2">
-                <select v-model="malText" class="bg-white dark:bg-gray-800 px-2 py-1 border rounded" title="MAL/MY">
-                    <option v-for="opt in malTextOptions" :key="opt.key" :value="opt.key">{{ opt.label }}</option>
-                </select>
+            <div class="relative">
+                <div class="mb-1 text-gray-500 dark:text-gray-400 text-xs">Prefix</div>
+                <button @click="showPrefixDropdown = !showPrefixDropdown"
+                    class="flex justify-between items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none w-24"
+                    title="Prefix">
+                    <div class="flex items-center gap-2">
+                        <Icon name="ph:flag" class="text-lg" />
+                        <span>{{ malText }}</span>
+                    </div>
+                    <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div v-if="showPrefixDropdown"
+                    class="z-10 absolute bg-white dark:bg-gray-800 shadow-lg mt-1 border border-gray-200 dark:border-gray-700 rounded-none w-24">
+                    <button v-for="opt in malTextOptions" :key="opt.key"
+                        @click="malText = opt.key; showPrefixDropdown = false"
+                        class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                        <span>{{ opt.label }}</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Flag Type Dropdown -->
-            <div class="relative ml-2">
-                <select v-model="flagType" class="bg-white dark:bg-gray-800 px-2 py-1 border rounded" title="Flag Type">
-                    <option v-for="opt in flagTypeOptions" :key="opt.key" :value="opt.key">{{ opt.label }}</option>
-                </select>
+            <div class="relative">
+                <div class="mb-1 text-gray-500 dark:text-gray-400 text-xs">Flag</div>
+                <button @click="showFlagDropdown = !showFlagDropdown"
+                    class="flex justify-between items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none w-24"
+                    title="Flag Type">
+                    <div class="flex items-center gap-2">
+                        <Icon name="ph:flag-checkered" class="text-lg" />
+                        <span>{{flagTypeOptions.find(f => f.key === flagType)?.label}}</span>
+                    </div>
+                    <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div v-if="showFlagDropdown"
+                    class="z-10 absolute bg-white dark:bg-gray-800 shadow-lg mt-1 border border-gray-200 dark:border-gray-700 rounded-none w-24">
+                    <button v-for="opt in flagTypeOptions" :key="opt.key"
+                        @click="flagType = opt.key; showFlagDropdown = false"
+                        class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 w-full text-sm text-left">
+                        <span>{{ opt.label }}</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Show Flag Line -->
-            <div class="flex items-center ml-2">
-                <input type="checkbox" id="showFlagLine" v-model="showFlagLine" class="mr-1" />
-                <label for="showFlagLine" class="text-xs">Show Line</label>
+            <div class="relative">
+                <div class="mb-1 text-gray-500 dark:text-gray-400 text-xs">Flag Line</div>
+                <div class="flex items-center bg-white dark:bg-gray-800 px-2 py-1 border rounded-none h-[34px]">
+                    <input type="checkbox" id="showFlagLine" v-model="showFlagLine"
+                        class="bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 w-4 h-4 text-blue-600" />
+                    <label for="showFlagLine" class="ml-2 text-gray-900 dark:text-gray-300 text-sm">Show</label>
+                </div>
             </div>
         </div>
 
         <!-- Plate Preview -->
         <div
             class="bg-gray-50/30 shadow-sm mb-8 sm:mb-12 border-x-0 border-y-2 border-black dark:border-black rounded-none plate-preview">
-            <div class="relative m-12 mx-auto p-2 sm:p-8 rounded-none w-full max-w-[800px] h-[120px] sm:h-[176px]">
+            <div class="relative m-64 mx-auto p-2 sm:p-8 rounded-none w-full max-w-[800px] h-[120px] sm:h-[176px]"
+                :style="{ transform: `scale(${previewScale})`, transformOrigin: 'center' }">
                 <!-- Main plate content -->
                 <div class="absolute inset-0 rounded-lg" :style="{ backgroundColor: plateColors[bgColor] }">
                     <!-- QR Code (top right) -->
@@ -304,9 +382,11 @@
 
                         <!-- Plate Text Area -->
                         <div class="flex flex-1 justify-center items-center">
-                            <div class="text-5xl sm:text-8xl euro-font" :style="{
+                            <div class="euro-font" :style="{
+                                fontSize: `${fontSize}px`,
                                 color: textColors[textColor],
-                                letterSpacing: '2px sm:4px'
+                                letterSpacing: '2px sm:4px',
+                                fontFamily: fonts[fontStyle]
                             }">
                                 {{ plateText }}
                             </div>
@@ -323,19 +403,26 @@
                         `
                 }"></div>
             </div>
-        </div>
 
-        <!-- Disclaimer -->
-        <div
-            class="bg-amber-50 dark:bg-amber-950 p-3 sm:p-4 border-amber-800 border-y-2 dark:border-amber-200 rounded-none text-amber-800 dark:text-amber-200 text-sm sm:text-base">
-            <div class="flex justify-between">
-                <p class="font-bold">Disclaimer</p>
+            <!-- Resize Controls -->
+            <div class="flex justify-center items-center gap-4 mt-4">
+                <button @click="adjustScale(-0.1)"
+                    class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-none transition-colors"
+                    title="Decrease Size">
+                    <Icon name="ph:minus" class="text-lg" />
+                </button>
+                <span class="text-sm">{{ Math.round(previewScale * 100) }}%</span>
+                <button @click="adjustScale(0.1)"
+                    class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-none transition-colors"
+                    title="Increase Size">
+                    <Icon name="ph:plus" class="text-lg" />
+                </button>
+                <button @click="resetScale"
+                    class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-none transition-colors"
+                    title="Reset Size">
+                    <Icon name="ph:arrows-out-simple" class="text-lg" />
+                </button>
             </div>
-            <p>
-                This generated plate image is for demonstration purposes only and does not represent an actual JPJ
-                ePlate. This preview is not affiliated with or endorsed by JPJ Malaysia and should not be used for any
-                official purposes.
-            </p>
         </div>
 
         <!-- About Modal -->
@@ -348,14 +435,17 @@
                         <Icon name="ph:x" class="text-lg" />
                     </button>
                 </div>
-                <p class="mb-4 text-justify">
+                <p class="mb-4">
                     This is an app to generate Malaysian license plate.
-                    This tool is for demonstration purposes only and is not affiliated with Road Transport Department
-                    Malaysia (JPJ).
+                </p>
+                <p class="mb-4 text-justify">
+                    This generated plate image is for demonstration purposes only and does not represent an actual JPJ
+                    ePlate. This preview is not affiliated with or endorsed by Road Transport Department (JPJ Malaysia)
+                    and should not be used for any official purposes.
                 </p>
                 <p class="mb-4">
-                    This app is created by <a href="https://kebal.my" target="_blank"
-                        class="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Kebal</a>.
+                    © {{ currentYear }} <a href="https://kebal.my" target="_blank"
+                        class="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Kebal</a>
                 </p>
             </div>
         </div>
@@ -368,7 +458,7 @@ import html2canvas from 'html2canvas'
 
 const plateType = ref('ice')
 const plateText = ref('MALAYSIA')
-const fontStyle = ref('eu')
+const fontStyle = ref('arial')
 const textColor = ref('black')
 const isDark = ref(false)
 const showTypeDropdown = ref(false)
@@ -383,6 +473,9 @@ const showSaveAsDropdown = ref(false)
 const showAboutModal = ref(false)
 const showViewDropdown = ref(false)
 const showLanguageDropdown = ref(false)
+const showFontDropdown = ref(false)
+const showPrefixDropdown = ref(false)
+const showFlagDropdown = ref(false)
 const currentLanguage = ref('en')
 
 const malText = ref('MAL')
@@ -406,34 +499,46 @@ const flagUrl = computed(() =>
 const toggleTheme = () => {
     isDark.value = !isDark.value
     document.documentElement.classList.toggle('dark')
+    localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
 }
 
-
 const fontStyleOptions = [
+    { value: 'arial', label: 'Arial' },
+    { value: 'euro', label: 'European' },
     { value: 'japan1', label: 'Japanese 1' },
     { value: 'japan2', label: 'Japanese 2' },
     { value: 'japan3', label: 'Japanese 3' },
     { value: 'jpj1', label: 'JPJ 1' },
-    { value: 'noplato', label: 'No Plato' },
-    { value: 'usa', label: 'USA' },
     { value: 'korea', label: 'Korea' },
-    { value: 'arial', label: 'Arial' },
-    { value: 'uk', label: 'UK' },
-    { value: 'euro', label: 'European' }
+    { value: 'noplato', label: 'No Plato' },
+    { value: 'uk', label: 'UK/Singapore' },
+    { value: 'usa', label: 'USA' }
 ]
 
-onMounted(() => {
-    // Check system preference on mount (client-side only)
-    if (process.client && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        isDark.value = true
-        document.documentElement.classList.add('dark')
-    }
+const currentYear = computed(() => new Date().getFullYear())
 
+const previewScale = ref(1)
+
+const adjustScale = (delta) => {
+    const newScale = previewScale.value + delta
+    if (newScale >= 0.5 && newScale <= 2) {
+        previewScale.value = newScale
+    }
+}
+
+const resetScale = () => {
+    previewScale.value = 1
+}
+
+onMounted(() => {
     // Watch for system theme changes (client-side only)
     if (process.client) {
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            isDark.value = event.matches
-            document.documentElement.classList.toggle('dark', event.matches)
+            // Only update if user hasn't manually set the theme
+            if (!localStorage.getItem('theme')) {
+                isDark.value = event.matches
+                document.documentElement.classList.toggle('dark', event.matches)
+            }
         })
     }
 
@@ -446,6 +551,9 @@ onMounted(() => {
             showSaveAsDropdown.value = false
             showViewDropdown.value = false
             showLanguageDropdown.value = false
+            showFontDropdown.value = false
+            showPrefixDropdown.value = false
+            showFlagDropdown.value = false
         }
     })
 })
@@ -560,12 +668,19 @@ const saveAs = async (format) => {
     if (!plateElement) return
 
     try {
+        // Temporarily reset scale for capture
+        const originalScale = previewScale.value
+        previewScale.value = 1
+
         const canvas = await html2canvas(plateElement)
         const dataUrl = canvas.toDataURL(`image/${format}`)
         const link = document.createElement('a')
         link.download = `plate.${format}`
         link.href = dataUrl
         link.click()
+
+        // Restore original scale
+        previewScale.value = originalScale
     } catch (error) {
         console.error('Error saving image:', error)
     }
@@ -582,18 +697,27 @@ const newPlate = () => {
     showFileDropdown.value = false
     plateText.value = ''
     plateType.value = 'ice'
-    fontStyle.value = 'euro'
+    fontStyle.value = 'arial'
     textColor.value = 'black'
     bgColor.value = 'white'
     malText.value = 'MAL'
     flagType.value = 'origin'
     showFlagLine.value = true
+    fontSize.value = 96
+    // Refresh the page
+    window.location.reload()
 }
 
 const setLanguage = (lang) => {
     currentLanguage.value = lang
     showLanguageDropdown.value = false
     // Here you can add logic to change the language of the application
+}
+
+const fontSize = ref(96)
+
+const updateFontSize = (event) => {
+    fontSize.value = parseInt(event.target.value)
 }
 </script>
 
@@ -689,5 +813,64 @@ const setLanguage = (lang) => {
             #e5e7eb 10px,
             #d1d5db 10px,
             #d1d5db 20px);
+}
+
+/* Add styles for the range input */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    background: #e5e7eb;
+    border-radius: 5px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #2563eb;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #3b82f6;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    background: #2563eb;
+}
+
+.dark input[type="range"] {
+    background: #374151;
+}
+
+.dark input[type="range"]::-webkit-slider-thumb {
+    background: #60a5fa;
+}
+
+.dark input[type="range"]::-webkit-slider-thumb:hover {
+    background: #3b82f6;
+}
+
+.dark input[type="range"]::-moz-range-thumb {
+    background: #60a5fa;
+}
+
+.dark input[type="range"]::-moz-range-thumb:hover {
+    background: #3b82f6;
 }
 </style>
