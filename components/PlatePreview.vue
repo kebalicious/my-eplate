@@ -1,29 +1,126 @@
 <template>
-    <div class="mx-auto px-4 sm:px-8 md:px-16 py-4 w-full max-w-7xl text-gray-900 dark:text-white">
-        <div class="flex sm:flex-row flex-col justify-between items-center gap-4 mb-8">
-            <h1 class="font-bold text-2xl sm:text-3xl sm:text-left text-center">
-                Malaysia License Plate Generator
-            </h1>
-            <button 
-                @click="toggleTheme" 
-                class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 transition-colors"
-            >
+    <div
+        class="mx-auto py-4 border-x-2 dark:border-gray-800 border-black rounded-none w-full max-w-7xl text-gray-900 dark:text-white">
+        <div class="flex sm:flex-row flex-col justify-between items-center gap-4 mb-8 rounded-none">
+            <div class="bg-gray-50/30 p-4 border-2 border-black dark:border-black border-l-0 rounded-none">
+                <h1 class="font-bold text-2xl sm:text-3xl sm:text-left text-center">
+                    Malaysian e-Plate Generator
+                </h1>
+            </div>
+            <button @click="toggleTheme"
+                class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 transition-colors">
                 <Icon :name="isDark ? 'ph:moon-fill' : 'ph:sun-fill'" class="text-xl" />
                 {{ isDark ? 'Dark' : 'Light' }} Mode
             </button>
         </div>
 
+        <!-- Toolbar ala Microsoft Office -->
+        <div
+            class="flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 shadow-sm mb-8 p-3 border-2 border-x-0 border-black dark:border-black rounded-none">
+            <!-- Plate Type Dropdown -->
+            <div class="relative">
+                <button @click="showTypeDropdown = !showTypeDropdown"
+                    class="flex justify-between items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none w-64"
+                    title="Plate Type">
+                    <div class="flex items-center gap-2">
+                        <Icon :name="plateTypes.find(t => t.key === plateType).icon" class="text-lg" />
+                        <span class="hidden sm:inline">{{plateTypes.find(t => t.key === plateType).label}}</span>
+                    </div>
+                    <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div v-if="showTypeDropdown"
+                    class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-900 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-56">
+                    <button v-for="type in plateTypes" :key="type.key"
+                        @click="plateType = type.key; showTypeDropdown = false" :title="type.label" :class="[
+                            'flex flex-col items-center justify-center p-2 rounded-none transition-colors',
+                            plateType === type.key ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ]">
+                        <Icon :name="type.icon" class="mb-1 text-xl" />
+                        <span class="text-xs">{{ type.label }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Plate Number -->
+            <input v-model="plateText" type="text" maxlength="10"
+                class="bg-white dark:bg-gray-800 ml-2 px-2 py-1 border rounded-none w-96 text-base" title="Plate Number"
+                placeholder="Plate No." />
+
+            <!-- Font Style -->
+            <select v-model="fontStyle" class="bg-white dark:bg-gray-800 ml-2 px-2 py-1 border rounded-none w-48 text-base"
+                title="Font Style">
+                <option v-for="option in fontStyleOptions" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                </option>
+            </select>
+
+            <!-- Text Color Dropdown -->
+            <div class="relative ml-2">
+                <button @click="showTextColorDropdown = !showTextColorDropdown"
+                    class="flex items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none"
+                    title="Text Color">
+                    <span class="border border-gray-300 rounded-none w-6 h-6"
+                        :style="{ backgroundColor: textColors[textColor] }"></span>
+                    <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div v-if="showTextColorDropdown"
+                    class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-900 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-40">
+                    <button v-for="color in textColorOptions" :key="color.key"
+                        @click="textColor = color.key; showTextColorDropdown = false"
+                        :title="color.label"
+                        :class="[
+                            'w-8 h-8 rounded-none border-2 flex items-center justify-center transition-all',
+                            textColor === color.key ? 'ring-2 ring-blue-500' : ''
+                        ]"
+                        :style="{ backgroundColor: textColors[color.key] }">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Plate Background Color Dropdown -->
+            <div class="relative ml-2">
+                <button @click="showBgColorDropdown = !showBgColorDropdown"
+                    class="flex items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none"
+                    title="Plate Background Color">
+                    <span class="border border-gray-300 rounded-none w-6 h-6"
+                        :style="{ backgroundColor: plateColors[bgColor] }"></span>
+                    <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div v-if="showBgColorDropdown"
+                    class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-900 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-40">
+                    <button v-for="color in bgColorOptions" :key="color.key"
+                        @click="bgColor = color.key; showBgColorDropdown = false"
+                        :title="color.label"
+                        :class="[
+                            'w-8 h-8 rounded-none border-2 flex items-center justify-center transition-all',
+                            bgColor === color.key ? 'ring-2 ring-blue-500' : ''
+                        ]"
+                        :style="{ backgroundColor: plateColors[color.key] }">
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Plate Preview -->
-        <div class="bg-white dark:bg-gray-900 shadow-sm mb-8 sm:mb-12 border-4 border-gray-100 dark:border-gray-800 rounded-xl rounded-t-lg">
-            <h2 class="bg-gray-100 dark:bg-gray-800 mb-4 p-2 overflow-hidden font-semibold text-xl">Preview</h2>
-            <div class="relative mx-auto p-2 sm:p-4 w-full max-w-[800px] h-[120px] sm:h-[176px]">
+        <div
+            class="bg-gray-50/30 shadow-sm mb-8 sm:mb-12 border-x-0 border-y-2 border-black dark:border-black rounded-none">
+            <div class="relative m-12 mx-auto p-2 sm:p-8 rounded-none w-full max-w-[800px] h-[120px] sm:h-[176px]">
                 <!-- Main plate content -->
-                <div class="absolute inset-0 bg-[#F4F4F4] rounded-lg">
+                <div class="absolute inset-0 rounded-lg" :style="{ backgroundColor: plateColors[bgColor] }">
                     <!-- QR Code (top right) -->
-                    <div class="top-2 right-2 absolute bg-black rounded-sm w-3 sm:w-4 h-3 sm:h-4"></div>
+                    <div class="top-2 right-2 absolute">
+                        <img :src="qrCodeUrl" alt="QR Code" class="w-3 h-3" />
+                    </div>
 
                     <!-- Serial Number (top right) -->
-                    <div class="top-2 right-6 sm:right-8 absolute text-[6px] text-gray-400 sm:text-[8px]">000007543</div>
+                    <div class="top-2 right-6 sm:right-8 absolute text-[6px] text-gray-400 sm:text-[8px]">000000000
+                    </div>
 
                     <!-- "FRONT" text (bottom right) -->
                     <div class="right-2 bottom-2 absolute text-[6px] text-gray-400 sm:text-[8px]">FRONT</div>
@@ -33,7 +130,8 @@
                         <div class="relative pl-1.5 sm:pl-2.5 rounded-s-xl overflow-hidden" :style="{
                             backgroundColor: plateColors[plateType]
                         }">
-                            <div class="flex justify-center items-center mx-auto p-2 sm:p-3 w-full h-[55px] sm:h-[80px]">
+                            <div
+                                class="flex justify-center items-center mx-auto p-2 sm:p-3 w-full h-[55px] sm:h-[80px]">
                                 <img src="https://i.imgur.com/MPgmBgw.png" alt="flag"
                                     class="w-full h-full object-contain" />
                             </div>
@@ -44,8 +142,10 @@
                         </div>
 
                         <!-- Secure Strip -->
-                        <div class="relative flex justify-center items-center bg-[#dbdbdb] w-[6px] sm:w-[10px] overflow-hidden">
-                            <span class="text-[8px] text-gray-400 sm:text-xs text-center rotate-180 [writing-mode:vertical-rl]">
+                        <div
+                            class="relative flex justify-center items-center bg-[#dbdbdb] w-[6px] sm:w-[10px] overflow-hidden">
+                            <span
+                                class="text-[8px] text-gray-400 sm:text-xs text-center rotate-180 [writing-mode:vertical-rl]">
                                 SECURE SECURE SECURE
                             </span>
                         </div>
@@ -73,131 +173,9 @@
             </div>
         </div>
 
-        <!-- Controls -->
-        <div class="bg-white dark:bg-gray-900 shadow-sm mb-8 sm:mb-12 border-4 border-gray-100 dark:border-gray-800 rounded-xl rounded-t-lg">
-            <h2 class="bg-gray-100 dark:bg-gray-800 mb-4 p-2 overflow-hidden font-semibold text-xl">Controls</h2>
-            <div class="gap-4 sm:gap-6 grid grid-cols-1 md:grid-cols-2 p-3 sm:p-4">
-                <div>
-                    <label class="block mb-2 text-base sm:text-lg">Plate Type</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button @click="plateType = 'ice'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            plateType === 'ice' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            ICE Car
-                        </button>
-                        <button @click="plateType = 'ev'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            plateType === 'ev' ? 'bg-green-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            EV
-                        </button>
-                        <button @click="plateType = 'commercial'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            plateType === 'commercial' ? 'bg-yellow-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            Commercial
-                        </button>
-                        <button @click="plateType = 'military'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            plateType === 'military' ? 'bg-green-800 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            Military
-                        </button>
-                        <button @click="plateType = 'public'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            plateType === 'public' ? 'bg-red-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            Public Transport
-                        </button>
-                        <button @click="plateType = 'mafia'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            plateType === 'mafia' ? 'bg-black text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            Mafia
-                        </button>
-                        <button @click="plateType = 'royal'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            plateType === 'royal' ? 'bg-yellow-500 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            Royal
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block mb-2 text-base sm:text-lg">Plate Number</label>
-                    <input v-model="plateText" type="text" maxlength="10"
-                        class="bg-white dark:bg-gray-800 p-3 sm:p-4 border border-gray-200 dark:border-gray-700 rounded-xl w-full text-lg sm:text-xl uppercase" />
-                </div>
-
-                <div>
-                    <label class="block mb-2 text-base sm:text-lg">Font Style</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button @click="fontStyle = 'eu'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            fontStyle === 'eu' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            European
-                        </button>
-                        <button @click="fontStyle = 'uk'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            fontStyle === 'uk' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            UK/Singapore
-                        </button>
-                        <button @click="fontStyle = 'old'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            fontStyle === 'old' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            Old Malaysian
-                        </button>
-                        <button @click="fontStyle = 'japan'" :class="[
-                            'px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors',
-                            fontStyle === 'japan' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        ]">
-                            Japanese
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block mb-2 text-base sm:text-lg">Text Color</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button 
-                            @click="textColor = 'black'" 
-                            class="rounded-lg ring-2 ring-offset-2 w-8 sm:w-10 h-8 sm:h-10 hover:scale-110 transition-transform"
-                            :class="[
-                                'bg-black',
-                                textColor === 'black' ? 'ring-blue-500' : 'ring-transparent'
-                            ]"
-                        >
-                        </button>
-                        <button 
-                            @click="textColor = 'white'" 
-                            class="rounded-lg ring-2 ring-offset-2 w-8 sm:w-10 h-8 sm:h-10 hover:scale-110 transition-transform"
-                            :class="[
-                                'bg-white',
-                                textColor === 'white' ? 'ring-blue-500' : 'ring-transparent'
-                            ]"
-                        >
-                        </button>
-                        <button 
-                            @click="textColor = 'red'" 
-                            class="rounded-lg ring-2 ring-offset-2 w-8 sm:w-10 h-8 sm:h-10 hover:scale-110 transition-transform"
-                            :class="[
-                                'bg-red-600',
-                                textColor === 'red' ? 'ring-blue-500' : 'ring-transparent'
-                            ]"
-                        >
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Disclaimer -->
-        <div class="bg-amber-50 dark:bg-amber-950 p-3 sm:p-4 rounded-xl text-amber-800 dark:text-amber-200 text-sm sm:text-base">
+        <div
+            class="bg-amber-50 dark:bg-amber-950 p-3 sm:p-4 border-amber-800 border-y-2 dark:border-amber-200 rounded-none text-amber-800 dark:text-amber-200 text-sm sm:text-base">
             <div class="flex justify-between">
                 <p class="font-bold">Disclaimer</p>
             </div>
@@ -211,18 +189,37 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const plateType = ref('ice')
 const plateText = ref('MALAYSIA')
 const fontStyle = ref('eu')
 const textColor = ref('black')
 const isDark = ref(false)
+const showTypeDropdown = ref(false)
+const showTextColorDropdown = ref(false)
+const showBgColorDropdown = ref(false)
+const bgColor = ref('white')
 
 const toggleTheme = () => {
     isDark.value = !isDark.value
     document.documentElement.classList.toggle('dark')
 }
+
+
+const fontStyleOptions = [
+    { value: 'japan1', label: 'Japanese 1' },
+    { value: 'japan2', label: 'Japanese 2' },
+    { value: 'japan3', label: 'Japanese 3' },
+    { value: 'jpj1', label: 'JPJ 1' },
+    { value: 'noplato', label: 'No Plato' },
+    { value: 'usa', label: 'USA' },
+    { value: 'korea1', label: 'Korea 1' },
+    { value: 'korea2', label: 'Korea 2' },
+    { value: 'arial', label: 'Arial' },
+    { value: 'uk', label: 'UK' },
+    { value: 'euro', label: 'European' }
+]
 
 onMounted(() => {
     // Check system preference on mount (client-side only)
@@ -245,15 +242,35 @@ const plateColors = {
     ev: '#8dbf22',
     commercial: '#CC0000',
     military: '#5D6532',
-    public: '#FF0000',
+    public: '#00FFFF',
+    government: '#800080',
     mafia: '#000000',
-    royal: '#FADA5E'
+    royal: '#FADA5E',
+    carbon: '#232b2b',
+    olive: '#808000',
+    militarygreen: '#4B5320',
+    camogreen: '#78866b',
+    camonavy: '#3b4c6b',
+    camolightblue: '#7ec8e3',
+    camored: '#b22222',
+    camopolice: '#1e90ff',
+    gold: '#FFD700',
+    white: '#FFFFFF'
 }
 
 const textColors = {
     black: "rgb(0, 0, 0)",
     white: "rgb(255, 255, 255)",
-    red: "rgb(255, 0, 0)"
+    red: "rgb(255, 0, 0)",
+    carbon: "#232b2b",
+    olive: "#808000",
+    militarygreen: "#4B5320",
+    camogreen: "#78866b",
+    camonavy: "#3b4c6b",
+    camolightblue: "#7ec8e3",
+    camored: "#b22222",
+    camopolice: "#1e90ff",
+    gold: "#FFD700"
 }
 
 const fonts = {
@@ -262,6 +279,60 @@ const fonts = {
     old: "'OldMalaysian', sans-serif",
     japan: "'JapanPlate', sans-serif"
 }
+
+const plateTypes = [
+    { key: 'ice', icon: 'ph:car', label: 'ICE' },
+    { key: 'ev', icon: 'ph:lightning', label: 'EV' },
+    { key: 'commercial', icon: 'ph:truck', label: 'Commercial' },
+    { key: 'military', icon: 'ph:shield', label: 'Military' },
+    { key: 'public', icon: 'ph:bus', label: 'Public Transport' },
+    { key: 'government', icon: 'ph:buildings', label: 'Government' },
+    { key: 'mafia', icon: 'ph:skull', label: 'Mafia' },
+    { key: 'royal', icon: 'ph:crown', label: 'Royal' }
+]
+
+const textColorOptions = [
+    { key: 'black', label: 'Black' },
+    { key: 'white', label: 'White' },
+    { key: 'red', label: 'Red' },
+    { key: 'carbon', label: 'Carbon' },
+    { key: 'olive', label: 'Olive' },
+    { key: 'militarygreen', label: 'Military Green' },
+    { key: 'camogreen', label: 'Camo Green' },
+    { key: 'camonavy', label: 'Camo Navy' },
+    { key: 'camolightblue', label: 'Camo Light Blue' },
+    { key: 'camored', label: 'Camo Red' },
+    { key: 'camopolice', label: 'Police Blue' },
+    { key: 'gold', label: 'Gold' }
+]
+
+const bgColorOptions = [
+    { key: 'white', label: 'White' },
+    { key: 'ice', label: 'ICE' },
+    { key: 'ev', label: 'EV' },
+    { key: 'commercial', label: 'Commercial' },
+    { key: 'military', label: 'Military' },
+    { key: 'public', label: 'Public Transport' },
+    { key: 'government', label: 'Government' },
+    { key: 'mafia', label: 'Mafia' },
+    { key: 'royal', label: 'Royal' },
+    { key: 'carbon', label: 'Carbon' },
+    { key: 'olive', label: 'Olive' },
+    { key: 'militarygreen', label: 'Military Green' },
+    { key: 'camogreen', label: 'Camo Green' },
+    { key: 'camonavy', label: 'Camo Navy' },
+    { key: 'camolightblue', label: 'Camo Light Blue' },
+    { key: 'camored', label: 'Camo Red' },
+    { key: 'camopolice', label: 'Police Blue' },
+    { key: 'gold', label: 'Gold' }
+]
+
+// QR Code generation
+const qrCodeUrl = computed(() => {
+    const url = 'https://kebal.my'
+    const size = 100
+    return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}`
+})
 </script>
 
 <style>
@@ -299,5 +370,13 @@ const fonts = {
 
 .font-montserrat {
     font-family: "Montserrat", sans-serif;
+}
+
+.bg-striped {
+    background-image: repeating-linear-gradient(45deg,
+            #e5e7eb,
+            #e5e7eb 10px,
+            #d1d5db 10px,
+            #d1d5db 20px);
 }
 </style>
