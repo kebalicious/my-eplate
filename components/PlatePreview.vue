@@ -1,8 +1,8 @@
 <template>
     <div
-        class="mx-auto py-4 border-x-2 dark:border-gray-800 border-black rounded-none w-full max-w-full text-gray-900 dark:text-white">
+        class="mx-auto py-4 border-x-2 dark:border-gray-700 border-black rounded-none w-full max-w-full text-gray-900 dark:text-gray-100">
         <div class="flex sm:flex-row flex-col justify-between items-center gap-4 mb-8 rounded-none">
-            <div class="bg-gray-50/30 p-4 border-2 border-black dark:border-black border-l-0 rounded-none">
+            <div class="bg-gray-50/30 dark:bg-gray-800/30 p-4 border-2 dark:border-gray-700 border-black border-l-0 rounded-none">
                 <h1 class="font-bold text-2xl sm:text-3xl sm:text-left text-center">
                     Malaysian e-Plate Generator
                 </h1>
@@ -10,11 +10,11 @@
         </div>
 
         <div
-            class="flex items-center bg-white/80 dark:bg-gray-900/80 shadow-sm mb-2 p-0 border-2 border-x-0 border-black dark:border-black rounded-none">
+            class="flex items-center bg-white/80 dark:bg-gray-800/80 shadow-sm mb-2 p-0 border-2 border-x-0 dark:border-gray-700 border-black rounded-none">
             <!-- File Button with Dropdown -->
             <div class="relative">
                 <button @click="showFileDropdown = !showFileDropdown"
-                    class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-none text-gray-700 dark:text-gray-300 transition-colors">
+                    class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-none text-gray-700 dark:text-gray-200 transition-colors">
                     <Icon name="ph:file" class="text-lg" />
                     <span class="text-sm">File</span>
                 </button>
@@ -70,7 +70,7 @@
             <!-- View Button with Dropdown -->
             <div class="relative">
                 <button @click="showViewDropdown = !showViewDropdown"
-                    class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-none text-gray-700 dark:text-gray-300 transition-colors">
+                    class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-none text-gray-700 dark:text-gray-200 transition-colors">
                     <Icon name="ph:eye" class="text-lg" />
                     <span class="text-sm">View</span>
                 </button>
@@ -108,7 +108,7 @@
             <!-- Help Button with Dropdown -->
             <div class="relative">
                 <button @click="showHelpDropdown = !showHelpDropdown"
-                    class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 px-4 py-2 rounded-none text-gray-700 dark:text-gray-300 transition-colors">
+                    class="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-none text-gray-700 dark:text-gray-200 transition-colors">
                     <Icon name="ph:question" class="text-lg" />
                     <span class="text-sm">Help</span>
                 </button>
@@ -154,7 +154,7 @@
 
         <!-- Toolbar ala Microsoft Office -->
         <div
-            class="flex items-center gap-2 bg-white/80 dark:bg-gray-900/80 shadow-sm mb-8 p-3 border-2 border-x-0 border-black dark:border-black rounded-none">
+            class="flex items-center gap-2 bg-white/80 dark:bg-gray-800/80 shadow-sm mb-8 p-3 border-2 border-x-0 dark:border-gray-700 border-black rounded-none">
             <!-- Plate Type Dropdown -->
             <div class="relative">
                 <div class="mb-1 text-gray-500 dark:text-gray-400 text-xs">Plate Type</div>
@@ -170,11 +170,11 @@
                     </svg>
                 </button>
                 <div v-if="showTypeDropdown"
-                    class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-900 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-56">
+                    class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-800 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-56">
                     <button v-for="type in plateTypes" :key="type.key"
                         @click="plateType = type.key; showTypeDropdown = false" :title="type.label" :class="[
                             'flex flex-col items-center justify-center p-2 rounded-none transition-colors',
-                            plateType === type.key ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                            plateType === type.key ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                         ]">
                         <Icon :name="type.icon" class="mb-1 text-xl" />
                         <span class="text-xs">{{ type.label }}</span>
@@ -237,18 +237,18 @@
                 <button @click="showTextColorDropdown = !showTextColorDropdown"
                     class="flex items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none"
                     title="Text Color">
-                    <span class="border border-gray-300 rounded-none w-6 h-6"
+                    <span class="border border-gray-300 dark:border-gray-600 rounded-none w-6 h-6"
                         :style="{ backgroundColor: textColors[textColor] }"></span>
                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
                 <div v-if="showTextColorDropdown"
-                    class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-900 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-40">
+                    class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-800 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-40">
                     <button v-for="color in textColorOptions" :key="color.key"
                         @click="textColor = color.key; showTextColorDropdown = false" :title="color.label" :class="[
                             'w-8 h-8 rounded-none border-2 flex items-center justify-center transition-all',
-                            textColor === color.key ? 'ring-2 ring-blue-500' : ''
+                            textColor === color.key ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''
                         ]" :style="{ backgroundColor: textColors[color.key] }">
                     </button>
                 </div>
@@ -260,18 +260,18 @@
                 <button @click="showBgColorDropdown = !showBgColorDropdown"
                     class="flex items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1 border rounded-none"
                     title="Plate Background Color">
-                    <span class="border border-gray-300 rounded-none w-6 h-6"
+                    <span class="border border-gray-300 dark:border-gray-600 rounded-none w-6 h-6"
                         :style="{ backgroundColor: plateColors[bgColor] }"></span>
                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
                 <div v-if="showBgColorDropdown"
-                    class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-900 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-40">
+                    class="z-10 absolute gap-2 grid grid-cols-3 bg-white dark:bg-gray-800 shadow-lg mt-2 p-2 border border-gray-300 dark:border-gray-700 rounded-none w-40">
                     <button v-for="color in bgColorOptions" :key="color.key"
                         @click="bgColor = color.key; showBgColorDropdown = false" :title="color.label" :class="[
                             'w-8 h-8 rounded-none border-2 flex items-center justify-center transition-all',
-                            bgColor === color.key ? 'ring-2 ring-blue-500' : ''
+                            bgColor === color.key ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''
                         ]" :style="{ backgroundColor: plateColors[color.key] }">
                     </button>
                 </div>
@@ -338,11 +338,11 @@
 
         <!-- Plate Preview -->
         <div
-            class="bg-gray-50/30 shadow-sm mb-8 sm:mb-12 border-x-0 border-y-2 border-black dark:border-black rounded-none plate-preview">
+            class="bg-gray-50/30 dark:bg-gray-800/30 shadow-sm mb-8 sm:mb-12 border-x-0 border-y-2 dark:border-gray-700 border-black rounded-none plate-preview">
             <div class="relative m-64 mx-auto p-2 sm:p-8 rounded-none w-full max-w-[800px] h-[120px] sm:h-[176px]"
                 :style="{ transform: `scale(${previewScale})`, transformOrigin: 'center' }">
                 <!-- Main plate content -->
-                <div class="absolute inset-0 rounded-lg" :style="{ backgroundColor: plateColors[bgColor] }">
+                <div class="absolute inset-0 rounded-xl" :style="{ backgroundColor: plateColors[bgColor] }">
                     <!-- QR Code (top right) -->
                     <div class="top-2 right-2 absolute">
                         <img :src="qrCodeUrl" alt="QR Code" class="w-3 h-3" />
@@ -407,18 +407,18 @@
             <!-- Resize Controls -->
             <div class="flex justify-center items-center gap-4 mt-4">
                 <button @click="adjustScale(-0.1)"
-                    class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-none transition-colors"
+                    class="hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-none transition-colors"
                     title="Decrease Size">
                     <Icon name="ph:minus" class="text-lg" />
                 </button>
                 <span class="text-sm">{{ Math.round(previewScale * 100) }}%</span>
                 <button @click="adjustScale(0.1)"
-                    class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-none transition-colors"
+                    class="hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-none transition-colors"
                     title="Increase Size">
                     <Icon name="ph:plus" class="text-lg" />
                 </button>
                 <button @click="resetScale"
-                    class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-none transition-colors"
+                    class="hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-none transition-colors"
                     title="Reset Size">
                     <Icon name="ph:arrows-out-simple" class="text-lg" />
                 </button>
@@ -531,6 +531,22 @@ const resetScale = () => {
 }
 
 onMounted(() => {
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme === 'dark') {
+        isDark.value = true
+        document.documentElement.classList.add('dark')
+    } else if (savedTheme === 'light') {
+        isDark.value = false
+        document.documentElement.classList.remove('dark')
+    } else {
+        // If no saved preference, check system preference
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            isDark.value = true
+            document.documentElement.classList.add('dark')
+        }
+    }
+
     // Watch for system theme changes (client-side only)
     if (process.client) {
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
